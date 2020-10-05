@@ -4,10 +4,8 @@
 
 const char *CESAR_ENCRYPT_OPTION = "-encrypt_cesar";
 const char *CESAR_DENCRYPT_OPTION = "-dencrypt_cesar";
-const char *MATH_ENCRYPT_OPTION = "-dencrypt_math";
+const char *MATH_ENCRYPT_OPTION = "-encrypt_math";
 const char *MATH_DENCRYPT_OPTION = "-dencrypt_math";
-
-const int CSR_ENCRYPT_STEPS = 6;
 
 const int ASCII_CHARACTERS_LENGTH = 26;
 
@@ -17,14 +15,20 @@ const int ASCII_INTERVAL_END_FOR_LOWERCASE_LETTERS = 122;
 const int ASCII_INTERVAL_START_FOR_UPPERCASE_LETTERS = 65;
 const int ASCII_INTERVAL_END_FOR_UPPERCASE_LETTERS = 90;
 
-void CSR_encrypt(char *value)
+const char ALPHABET[] = "abcdefghijklmnopqrstuvwxyz";
+
+void CSR_encrypt(char *mesg)
 {
-    int index = 0;
+    int index = 0, csr_encrypt_step;
     char newEncryptedValue[255];
-    for (char *key = value; *key; ++key)
+
+    printf("pas: ");
+    scanf("%i", &csr_encrypt_step);
+
+    for (char *key = mesg; *key; ++key)
     {
         int asciiKey = (int)*key;
-        int encryptedKey = asciiKey + CSR_ENCRYPT_STEPS;
+        int encryptedKey = asciiKey + csr_encrypt_step;
         if (ASCII_INTERVAL_START_FOR_LOWERCASE_LETTERS <= asciiKey && asciiKey <= ASCII_INTERVAL_END_FOR_LOWERCASE_LETTERS)
         {
             if (encryptedKey > ASCII_INTERVAL_END_FOR_LOWERCASE_LETTERS)
@@ -45,14 +49,18 @@ void CSR_encrypt(char *value)
     printf("Encrypt function result: \"%s\"\n", newEncryptedValue);
 }
 
-void CSR_dencrypt(char *value)
+void CSR_dencrypt(char *mesg)
 {
-    int index = 0;
+    int index = 0, csr_encrypt_step;
     char newDecryptedValue[255];
-    for (char *key = value; *key; ++key)
+
+    printf("pas: ");
+    scanf("%i", &csr_encrypt_step);
+
+    for (char *key = mesg; *key; ++key)
     {
         int asciiKey = (int)*key;
-        int encryptedKey = asciiKey - CSR_ENCRYPT_STEPS;
+        int encryptedKey = asciiKey - csr_encrypt_step;
         if (ASCII_INTERVAL_START_FOR_LOWERCASE_LETTERS <= asciiKey && asciiKey <= ASCII_INTERVAL_END_FOR_LOWERCASE_LETTERS)
         {
             if (encryptedKey < ASCII_INTERVAL_START_FOR_LOWERCASE_LETTERS)
@@ -74,6 +82,50 @@ void CSR_dencrypt(char *value)
     printf("Dencryption function result: \"%s\"\n", newDecryptedValue);
 }
 
+void MATH_encrypt(char *mesg)
+{
+    char enc[25];
+    int pas, i, j, k;
+
+    printf("pas: ");
+    scanf("%i", &pas);
+
+    for (i = 0; i < strlen(mesg); i++)
+        for (j = 0; j < strlen(ALPHABET); j++)
+            if (mesg[i] == ALPHABET[j])
+            {
+                k = (j + pas) % strlen(ALPHABET);
+                enc[i] = ALPHABET[k];
+            }
+
+    printf("enc: ");
+    for (i = 0; i < strlen(mesg); i++)
+        printf("%c", enc[i]);
+    printf("\n");
+}
+
+void MATH_dencrypt(char *mesg)
+{
+    char enc[25];
+    int pas, i, j, k;
+
+    printf("pas: ");
+    scanf("%i", &pas);
+
+    for (i = 0; i < strlen(mesg); i++)
+        for (j = 0; j < strlen(ALPHABET); j++)
+            if (mesg[i] == ALPHABET[j])
+            {
+                k = (j - pas) % strlen(ALPHABET);
+                enc[i] = ALPHABET[k];
+            }
+
+    printf("den: ");
+    for (i = 0; i < strlen(mesg); i++)
+        printf("%c", enc[i]);
+    printf("\n");
+}
+
 //compile code using command: gcc -o runme main.c && ./runme -encrypt_cesar text_to_encryption
 int main(int argc, char *argv[])
 {
@@ -81,8 +133,12 @@ int main(int argc, char *argv[])
     char *opts = argv[1];
     char *mesg = argv[2];
 
-    _Bool encrypt_option_exist = strcmp(opts, CESAR_ENCRYPT_OPTION) == 0;
-    _Bool dencrypt_option_exist = strcmp(opts, CESAR_DENCRYPT_OPTION) == 0;
+    const _Bool cesar_encrypt_option_exist = strcmp(opts, CESAR_ENCRYPT_OPTION) == 0;
+    const _Bool cesar_dencrypt_option_exist = strcmp(opts, CESAR_DENCRYPT_OPTION) == 0;
+    const _Bool math_encrypt_option_exist = strcmp(opts, MATH_ENCRYPT_OPTION) == 0;
+    const _Bool math_dencrypt_option_exist = strcmp(opts, MATH_DENCRYPT_OPTION) == 0;
+
+    const _Bool anyOptionExist = cesar_encrypt_option_exist || cesar_dencrypt_option_exist || math_encrypt_option_exist || math_dencrypt_option_exist;
 
     if (argc == 1)
     {
@@ -90,7 +146,7 @@ int main(int argc, char *argv[])
         exit(5);
     }
 
-    if (!(encrypt_option_exist || dencrypt_option_exist))
+    if (!anyOptionExist)
     {
         printf("No option was provided\n");
         exit(4);
@@ -104,16 +160,14 @@ int main(int argc, char *argv[])
 
     if (argc == 3)
     {
-        if (encrypt_option_exist)
-        {
-            printf("Encrypt function start.\n\n");
+        if (cesar_encrypt_option_exist)
             CSR_encrypt(mesg);
-        }
-        else if (dencrypt_option_exist)
-        {
-            printf("Dencrypt function start.\n\n");
+        else if (cesar_dencrypt_option_exist)
             CSR_dencrypt(mesg);
-        }
+        else if (math_encrypt_option_exist)
+            MATH_encrypt(mesg);
+        else if (math_dencrypt_option_exist)
+            MATH_dencrypt(mesg);
         else
         {
             fprintf(stderr, "%s: no such option: %s\n", prog, opts);
@@ -121,7 +175,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (argc >= 4 && (encrypt_option_exist || dencrypt_option_exist))
+    if (argc >= 4 && anyOptionExist)
     {
         printf("To many strings\n");
         exit(1);

@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "vars.h"
-#include "csr.h"
+#include "vars/vars.h"
+#include "csr/csr.h"
+#include "vgn/vgn.h"
 
 //compile code using command: gcc -o runme main.c && ./runme -encrypt_cesar text_to_encryption
+
 int main(int argc, char *argv[])
 {
-
     char *prog = argv[0];
     char *opts = argv[1];
     char *mesg = argv[2];
@@ -16,8 +17,12 @@ int main(int argc, char *argv[])
     const _Bool cesar_dencrypt_option_exist = strcmp(opts, CESAR_DENCRYPT_OPTION) == 0;
     const _Bool math_encrypt_option_exist = strcmp(opts, MATH_ENCRYPT_OPTION) == 0;
     const _Bool math_dencrypt_option_exist = strcmp(opts, MATH_DENCRYPT_OPTION) == 0;
+    const _Bool vgn_encrypt_option_exist = strcmp(opts, VGN_ENCRYPT_OPTION) == 0;
+    const _Bool vgn_dencrypt_option_exist = strcmp(opts, VGN_DENCRYPT_OPTION) == 0;
 
-    const _Bool anyOptionExist = cesar_encrypt_option_exist || cesar_dencrypt_option_exist || math_encrypt_option_exist || math_dencrypt_option_exist;
+    const _Bool anyOptionExist = ((cesar_encrypt_option_exist || cesar_dencrypt_option_exist) ||
+                                  (math_encrypt_option_exist || math_dencrypt_option_exist) ||
+                                  (vgn_encrypt_option_exist || vgn_dencrypt_option_exist));
 
     if (argc == 1)
     {
@@ -47,6 +52,10 @@ int main(int argc, char *argv[])
             MATH_encrypt(mesg);
         else if (math_dencrypt_option_exist)
             MATH_dencrypt(mesg);
+        else if (vgn_encrypt_option_exist)
+            VGN_encrypt(mesg);
+        else if (vgn_dencrypt_option_exist)
+            VGN_dencrypt(mesg);
         else
         {
             fprintf(stderr, "%s: no such option: %s\n", prog, opts);

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "vars.h"
+#include "../vars/vars.h"
 
 void CSR_encrypt(char *mesg)
 {

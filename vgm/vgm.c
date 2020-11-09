@@ -3,11 +3,12 @@
 #include "../vars/vars.h"
 #include "../utils/utils.h"
 
-void VGN_encrypt(char *message)
+void VGM_encrypt(char *message)
 {
     char encrMessage[25], encrKey[25] = "";
     int firstIndex, secondIndex, encrKeyCount = 0;
     int resultMessageAlphabetIndex, messageAlphabeticIndex, encrKeyAlphabeticIndex;
+    int seed = getCurrentDayInWeek();
 
     printf("encryption key: ");
     scanf("%s", encrKey);
@@ -22,7 +23,7 @@ void VGN_encrypt(char *message)
                 encrKeyAlphabeticIndex = secondIndex;
         }
 
-        resultMessageAlphabetIndex = (encrKeyAlphabeticIndex + messageAlphabeticIndex) % strlen(FULL_ALPHABET);
+        resultMessageAlphabetIndex = (encrKeyAlphabeticIndex + messageAlphabeticIndex + seed) % strlen(FULL_ALPHABET);
 
         encrMessage[firstIndex] = FULL_ALPHABET[resultMessageAlphabetIndex];
 
@@ -33,13 +34,15 @@ void VGN_encrypt(char *message)
     }
 
     logMessage(encrMessage, strlen(message));
+    printf("day in week: %i\n", seed);
 }
 
-void VGN_dencrypt(char *message)
+void VGM_dencrypt(char *message)
 {
     char encrMessage[25], encrKey[25] = "";
     int firstIndex, secondIndex, encrKeyCount = 0;
     int resultMessageAlphabetIndex, messageAlphabeticIndex, encrKeyAlphabeticIndex;
+    int seed = getCurrentDayInWeek();
 
     printf("encryption key: ");
     scanf("%s", encrKey);
@@ -54,7 +57,7 @@ void VGN_dencrypt(char *message)
                 encrKeyAlphabeticIndex = secondIndex;
         }
 
-        resultMessageAlphabetIndex = (messageAlphabeticIndex - encrKeyAlphabeticIndex);
+        resultMessageAlphabetIndex = (messageAlphabeticIndex - encrKeyAlphabeticIndex - seed);
         if (resultMessageAlphabetIndex < 0)
             resultMessageAlphabetIndex += strlen(FULL_ALPHABET);
 
@@ -67,4 +70,5 @@ void VGN_dencrypt(char *message)
     }
 
     logMessage(encrMessage, strlen(message));
+    printf("day in week: %i\n", seed);
 }

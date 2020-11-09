@@ -7,6 +7,9 @@ char *MATH_DENCRYPT_OPTION = "-dencrypt_math";
 char *VGN_ENCRYPT_OPTION = "-encrypt_vgn";
 char *VGN_DENCRYPT_OPTION = "-dencrypt_vgn";
 
+char *VGM_ENCRYPT_OPTION = "-encrypt_vgm";
+char *VGM_DENCRYPT_OPTION = "-dencrypt_vgm";
+
 int ASCII_CHARACTERS_LENGTH = 26;
 
 int ASCII_INTERVAL_START_FOR_LOWERCASE_LETTERS = 97;
